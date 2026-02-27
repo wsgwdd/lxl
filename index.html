@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 
@@ -150,19 +149,16 @@
             <p class="loading">加载中...</p>
         </div>
 
-        <button class="btn-refresh" onclick="showNextImage()">刷新图片</button>
+        <button class="btn-refresh" onclick="fetchImage()">刷新图片</button>
 
         <p class="status" id="status">正在加载...</p>
         <p class="counter" id="counter">本次已加载: 0 张 | 历史累计: 0 张</p>
+        <!-- <button class="btn-reset" onclick="resetCounter()">重置计数</button> -->
     </div>
 
     <script>
         let imageCount = 0;
         let totalImageCount = 0;
-        let currentPage = 1;
-        let currentImageIndex = 0;
-        let imageList = [];
-        let isLoading = false;
 
         // 从本地存储加载累计数量
         function loadCounter() {
@@ -186,128 +182,75 @@
             counter.textContent = `本次已加载: ${imageCount} 张 | 历史累计: ${totalImageCount} 张`;
         }
 
-        // 从wallhaven获取图片列表
-        async function fetchImagesFromPage(page) {
-            const status = document.getElementById('status');
-            status.textContent = `正在加载第 ${page} 页...`;
-
-            try {
-                const url = `https://wallhaven.cc/search?q=little%20girl%20Asian&categories=101&purity=010&sorting=date_added&order=desc&page=${page}`;
-                
-                // 使用CORS代理（因为wallhaven可能不允许跨域）
-                const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-                
-                const response = await fetch(proxyUrl);
-                const html = await response.text();
-
-                // 解析HTML，提取图片地址
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                
-                // 查找所有缩略图
-                const imgElements = doc.querySelectorAll('.thumb-listing-page li img');
-                const images = [];
-                
-                imgElements.forEach(img => {
-                    const dataSrc = img.getAttribute('data-src');
-                    if (dataSrc) {
-                        // 将缩略图URL转换为原图URL
-                        // wallhaven缩略图格式: https://th.wallhaven.cc/small/xxx/xxx.jpg
-                        // 原图格式: https://w.wallhaven.cc/full/xxx/xxx.jpg
-                        const fullUrl = dataSrc.replace('th.wallhaven.cc/small', 'w.wallhaven.cc/full');
-                        images.push(fullUrl);
-                    }
-                });
-
-                if (images.length > 0) {
-                    return images;
-                } else {
-                    status.textContent = '未找到图片，尝试使用缩略图...';
-                    // 如果原图URL失败，尝试直接使用缩略图
-                    const thumbnailImages = [];
-                    imgElements.forEach(img => {
-                        const dataSrc = img.getAttribute('data-src');
-                        if (dataSrc) {
-                            thumbnailImages.push(dataSrc);
-                        }
-                    });
-                    return thumbnailImages;
-                }
-            } catch (error) {
-                console.error('Error fetching page:', error);
-                return [];
+        // 重置计数器
+        function resetCounter() {
+            if (confirm('确定要重置历史累计数量吗？此操作不可撤销。')) {
+                imageCount = 0;
+                totalImageCount = 0;
+                saveCounter();
+                updateCounterDisplay();
+                const status = document.getElementById('status');
+                status.textContent = '计数器已重置';
             }
         }
 
-        // 显示下一张图片
-        async function showNextImage() {
-            if (isLoading) return;
-            
+        async function fetchImage() {
             const container = document.getElementById('imageContainer');
             const status = document.getElementById('status');
 
-            // 如果当前图片列表已用完，加载下一页
-            if (currentImageIndex >= imageList.length) {
-                isLoading = true;
-                container.innerHTML = '<p class="loading">加载中...</p>';
-                
-                const newImages = await fetchImagesFromPage(currentPage);
-                
-                if (newImages.length > 0) {
-                    imageList = newImages;
-                    currentImageIndex = 0;
-                    currentPage++;
+            // 显示加载状态
+            container.innerHTML = '<p class="loading">加载中...</p>';
+            status.textContent = '正在请求API...';
+
+            try {
+                const response = await fetch('https://api.qqsuu.cn/api/dm-littlesister?type=json');
+                const data = await response.json();
+
+                if (data && data.img) {
+                    // 创建图片元素
+                    const img = document.createElement('img');
+                    img.src = data.img;
+                    img.alt = '小姐姐图片';
+
+                    // 图片加载完成
+                    img.onload = function () {
+                        imageCount++;
+                        totalImageCount++;
+                        saveCounter(); // 保存到本地存储
+                        updateCounterDisplay();
+                        status.textContent = '加载成功！按空格键继续';
+                    };
+
+                    // 图片加载失败
+                    img.onerror = function () {
+                        status.textContent = '图片加载失败，请重试';
+                    };
+
+                    container.innerHTML = '';
+                    container.appendChild(img);
                 } else {
-                    container.innerHTML = '<p class="error">加载图片失败，请重试</p>';
-                    status.textContent = '加载失败';
-                    isLoading = false;
-                    return;
+                    container.innerHTML = '<p class="error">API返回数据格式错误</p>';
+                    status.textContent = '数据格式错误';
                 }
-                
-                isLoading = false;
+            } catch (error) {
+                console.error('Error:', error);
+                container.innerHTML = '<p class="error">网络请求失败，请检查网络连接</p>';
+                status.textContent = '请求失败';
             }
-
-            // 显示当前图片
-            const imgUrl = imageList[currentImageIndex];
-            currentImageIndex++;
-
-            const img = document.createElement('img');
-            img.src = imgUrl;
-            img.alt = 'Wallhaven图片';
-            img.onerror = function() {
-                // 如果原图加载失败，尝试加载缩略图
-                const thumbUrl = imgUrl.replace('w.wallhaven.cc/full', 'th.wallhaven.cc/small');
-                if (this.src !== thumbUrl) {
-                    this.src = thumbUrl;
-                } else {
-                    status.textContent = '图片加载失败';
-                }
-            };
-
-            img.onload = function() {
-                imageCount++;
-                totalImageCount++;
-                saveCounter();
-                updateCounterDisplay();
-                status.textContent = `加载成功！第 ${currentPage-1} 页 第 ${currentImageIndex}/${imageList.length} 张`;
-            };
-
-            container.innerHTML = '';
-            container.appendChild(img);
         }
 
         // 监听键盘事件
         document.addEventListener('keydown', function (event) {
             if (event.code === 'Space') {
                 event.preventDefault(); // 阻止页面滚动
-                showNextImage();
+                fetchImage();
             }
         });
 
         // 页面加载时初始化
         window.onload = function () {
             loadCounter(); // 加载本地存储的计数
-            showNextImage();
+            fetchImage();
         };
     </script>
 </body>
