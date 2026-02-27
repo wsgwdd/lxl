@@ -119,6 +119,24 @@
             color: #999;
             font-size: 12px;
         }
+
+        .btn-reset {
+            margin-top: 10px;
+            padding: 8px 20px;
+            font-size: 14px;
+            background: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            user-select: none;
+        }
+
+        .btn-reset:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 15px rgba(149, 165, 166, 0.4);
+        }
     </style>
 </head>
 
@@ -134,16 +152,51 @@
         <button class="btn-refresh" onclick="fetchImage()">刷新图片</button>
 
         <p class="status" id="status">正在加载...</p>
-        <p class="counter" id="counter">已加载: 0 张</p>
+        <p class="counter" id="counter">本次已加载: 0 张 | 历史累计: 0 张</p>
+        <!-- <button class="btn-reset" onclick="resetCounter()">重置计数</button> -->
     </div>
 
     <script>
         let imageCount = 0;
+        let totalImageCount = 0;
+
+        // 从本地存储加载累计数量
+        function loadCounter() {
+            const saved = localStorage.getItem('totalImageCount');
+            if (saved !== null) {
+                totalImageCount = parseInt(saved, 10);
+            } else {
+                totalImageCount = 0;
+            }
+            updateCounterDisplay();
+        }
+
+        // 保存累计数量到本地存储
+        function saveCounter() {
+            localStorage.setItem('totalImageCount', totalImageCount.toString());
+        }
+
+        // 更新计数显示
+        function updateCounterDisplay() {
+            const counter = document.getElementById('counter');
+            counter.textContent = `本次已加载: ${imageCount} 张 | 历史累计: ${totalImageCount} 张`;
+        }
+
+        // 重置计数器
+        function resetCounter() {
+            if (confirm('确定要重置历史累计数量吗？此操作不可撤销。')) {
+                imageCount = 0;
+                totalImageCount = 0;
+                saveCounter();
+                updateCounterDisplay();
+                const status = document.getElementById('status');
+                status.textContent = '计数器已重置';
+            }
+        }
 
         async function fetchImage() {
             const container = document.getElementById('imageContainer');
             const status = document.getElementById('status');
-            const counter = document.getElementById('counter');
 
             // 显示加载状态
             container.innerHTML = '<p class="loading">加载中...</p>';
@@ -162,7 +215,9 @@
                     // 图片加载完成
                     img.onload = function () {
                         imageCount++;
-                        counter.textContent = `已加载: ${imageCount} 张`;
+                        totalImageCount++;
+                        saveCounter(); // 保存到本地存储
+                        updateCounterDisplay();
                         status.textContent = '加载成功！按空格键继续';
                     };
 
@@ -192,8 +247,9 @@
             }
         });
 
-        // 页面加载时自动获取第一张图片
+        // 页面加载时初始化
         window.onload = function () {
+            loadCounter(); // 加载本地存储的计数
             fetchImage();
         };
     </script>
