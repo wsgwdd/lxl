@@ -3,147 +3,63 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>阿淫的后宫</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            min-height: 100vh; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; padding: 15px;
         }
-
         .container {
-            text-align: center;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 30px;
+            text-align: center; background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px; padding: 25px 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 600px;
-            width: 100%;
+            max-width: 600px; width: 100%;
         }
-
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 28px;
-        }
-
-        .hint {
-            color: #666;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-
+        h1 { color: #333; margin-bottom: 10px; font-size: 24px; }
+        .hint { color: #666; margin-bottom: 20px; font-size: 13px; }
         .key-hint {
-            display: inline-block;
-            background: #667eea;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            margin: 0 5px;
+            display: inline-block; background: #667eea; color: white;
+            padding: 4px 12px; border-radius: 20px; font-weight: bold; margin: 0 5px;
         }
-
         .image-container {
-            margin: 20px 0;
-            min-height: 400px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 10px;
-            overflow: hidden;
-            background: #f5f5f5;
-            position: relative;
+            margin: 15px 0; min-height: 350px; display: flex;
+            align-items: center; justify-content: center;
+            border-radius: 10px; overflow: hidden; background: #f5f5f5; width: 100%;
         }
-
         .image-container img {
-            max-width: 100%;
-            max-height: 500px;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            transition: opacity 0.3s ease;
+            max-width: 100%; max-height: 450px; border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); object-fit: contain;
         }
-
-        .loading {
-            color: #667eea;
-            font-size: 18px;
-        }
-
-        .error {
-            color: #e74c3c;
-            font-size: 16px;
-            padding: 20px;
-        }
-
-        .status {
-            margin-top: 15px;
-            color: #666;
-            font-size: 13px;
-        }
-
+        .loading { color: #667eea; font-size: 16px; }
+        .error { color: #e74c3c; font-size: 14px; padding: 20px; }
+        .status { margin-top: 15px; color: #666; font-size: 12px; min-height: 18px; }
         .btn-refresh {
-            margin-top: 15px;
-            padding: 12px 30px;
-            font-size: 16px;
+            margin-top: 15px; padding: 12px 30px; font-size: 16px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            user-select: none;
+            color: white; border: none; border-radius: 25px; cursor: pointer;
+            outline: none; user-select: none;
         }
-
-        .btn-refresh:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        .btn-refresh:active { transform: scale(0.98); }
+        .btn-refresh:disabled { opacity: 0.6; cursor: not-allowed; }
+        .counter { margin-top: 10px; color: #999; font-size: 11px; }
+        .progress-bar {
+            margin-top: 15px; width: 100%; height: 4px; background: #e0e0e0;
+            border-radius: 2px; overflow: hidden; display: none;
         }
-
-        .btn-refresh:active {
-            transform: translateY(0);
-        }
-
-        .btn-refresh:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .counter {
-            margin-top: 10px;
-            color: #999;
-            font-size: 12px;
-        }
-
-        .proxy-selector {
-            margin-top: 15px;
-            font-size: 13px;
-            color: #666;
-        }
-
-        .proxy-selector select {
-            margin-left: 10px;
-            padding: 5px 10px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
+        .progress-bar-fill {
+            height: 100%; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease; width: 0%;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h1>爱妃图册</h1>
+        <h1>阿淫的后宫</h1>
         <p class="hint">按 <span class="key-hint">空格键</span> 或点击按钮刷新图片</p>
 
         <div class="image-container" id="imageContainer">
@@ -152,246 +68,178 @@
 
         <button class="btn-refresh" id="refreshBtn" onclick="showRandomImage()">刷新图片</button>
 
-        <p class="status" id="status">正在加载...</p>
-        <p class="counter" id="counter">本次已加载: 0 张 | 历史累计: 0 张 | 图库: 0 张</p>
-        
-        <div class="proxy-selector">
-            <label>选择代理:
-                <select id="proxySelect">
-                    <option value="auto">自动选择</option>
-                    <option value="corsproxy">CORS Proxy</option>
-                    <option value="allorigins">AllOrigins</option>
-                    <option value="cors-anywhere">CORS Anywhere</option>
-                </select>
-            </label>
+        <div class="progress-bar" id="progressBar">
+            <div class="progress-bar-fill" id="progressBarFill"></div>
         </div>
+
+        <p class="status" id="status">正在初始化图库...</p>
+        <p class="counter" id="counter">本次: 0 张 | 历史累计: 0 张 | 图库: 0 张</p>
     </div>
 
     <script>
         let imageCount = 0;
         let totalImageCount = 0;
-        let imagePool = []; // 图片池
-        let usedImages = new Set(); // 已显示过的图片
+        let imagePool = []; 
+        let usedImages = new Set(); 
         let isLoading = false;
-        let currentProxyIndex = 0;
+        
+        // 【重要】将这里替换为你刚才部署的 Cloudflare Worker 地址
+        // 注意保留末尾的 ?url=
+        const WORKER_PROXY_URL = 'https://wallhaven-proxy.li2291932284.workers.dev/?url='; 
 
-        // CORS代理列表
-        const corsProxies = [
-            {
-                name: 'corsproxy',
-                getUrl: (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`
-            },
-            {
-                name: 'allorigins',
-                getUrl: (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`
-            },
-            {
-                name: 'cors-anywhere',
-                getUrl: (url) => `https://cors-anywhere.herokuapp.com/${url}`
-            }
-        ];
+        const CONFIG = {
+            query: 'bikini%20sexy%20girl%20Asian', 
+            pagesToLoad: 10, 
+            refillThreshold: 20 
+        };
 
-        // 从本地存储加载累计数量
         function loadCounter() {
             const saved = localStorage.getItem('totalImageCount');
-            if (saved !== null) {
-                totalImageCount = parseInt(saved, 10);
-            } else {
-                totalImageCount = 0;
-            }
+            totalImageCount = (saved !== null) ? parseInt(saved, 10) || 0 : 0;
             updateCounterDisplay();
         }
 
-        // 保存累计数量到本地存储
         function saveCounter() {
             localStorage.setItem('totalImageCount', totalImageCount.toString());
         }
 
-        // 更新计数显示
         function updateCounterDisplay() {
-            const counter = document.getElementById('counter');
-            counter.textContent = `本次已加载: ${imageCount} 张 | 历史累计: ${totalImageCount} 张 | 图库: ${imagePool.length} 张`;
+            document.getElementById('counter').textContent = 
+                `本次: ${imageCount} 张 | 历史累计: ${totalImageCount} 张 | 图库: ${imagePool.length} 张`;
         }
 
-        // 获取代理URL
-        function getProxyUrl(targetUrl) {
-            const select = document.getElementById('proxySelect');
-            const selectedProxy = select.value;
-            
-            if (selectedProxy === 'auto') {
-                const proxy = corsProxies[currentProxyIndex];
-                return proxy.getUrl(targetUrl);
-            } else {
-                const proxy = corsProxies.find(p => p.name === selectedProxy);
-                return proxy ? proxy.getUrl(targetUrl) : corsProxies[0].getUrl(targetUrl);
-            }
+        function updateProgress(current, total) {
+            const bar = document.getElementById('progressBar');
+            const fill = document.getElementById('progressBarFill');
+            bar.style.display = 'block';
+            fill.style.width = `${Math.min((current / total) * 100, 100)}%`;
+            if (current >= total) setTimeout(() => bar.style.display = 'none', 500);
         }
 
-        // 从多个页面加载图片到池中
         async function loadImagesToPool() {
             const status = document.getElementById('status');
-            const pages = [1, 2, 3, 4, 5]; // 加载前5页
+            status.textContent = '正在扩充图库...';
             
-            for (const page of pages) {
-                status.textContent = `正在加载第 ${page} 页到图库...`;
-                
-                const targetUrl = `https://wallhaven.cc/search?q=bikini%20sexy%20girl%20Asian&categories=101&purity=010&sorting=date_added&order=desc&page=${page}`;
-                
-                const select = document.getElementById('proxySelect');
-                const selectedProxy = select.value;
-                
-                if (selectedProxy === 'auto') {
-                    for (let i = 0; i < corsProxies.length; i++) {
-                        currentProxyIndex = i;
-                        const proxyUrl = getProxyUrl(targetUrl);
-                        
-                        try {
-                            const response = await fetch(proxyUrl);
-                            if (!response.ok) continue;
-                            
-                            const html = await response.text();
-                            const images = parseImages(html);
-                            
-                            if (images.length > 0) {
-                                // 将新图片添加到池中，避免重复
-                                images.forEach(img => {
-                                    const key = img.full; // 使用full URL作为唯一标识
-                                    if (!usedImages.has(key)) {
-                                        imagePool.push(img);
-                                    }
-                                });
-                                break; // 成功获取，跳出代理循环
-                            }
-                        } catch (error) {
-                            console.error(`Proxy ${i + 1} failed for page ${page}:`, error);
-                            continue;
-                        }
+            const randomStartPage = Math.floor(Math.random() * 10) + 1;
+            
+            for (let i = 0; i < CONFIG.pagesToLoad; i++) {
+                const page = randomStartPage + i;
+                status.textContent = `正在获取第 ${page} 页...`;
+                updateProgress(i, CONFIG.pagesToLoad);
+
+                try {
+                    // 1. 准备目标 API 地址
+                    const targetApi = `https://wallhaven.cc/api/v1/search?q=${CONFIG.query}&categories=101&purity=010&sorting=date_added&page=${page}`;
+                    
+                    // 2. 拼接代理地址
+                    // 如果你的 Worker 配置正确，它会自动添加跨域头并转发请求
+                    const finalUrl = WORKER_PROXY_URL + encodeURIComponent(targetApi);
+                    
+                    const response = await fetch(finalUrl);
+                    if (!response.ok) {
+                        console.error('Worker请求失败:', response.status);
+                        continue; 
                     }
-                } else {
-                    try {
-                        const proxyUrl = getProxyUrl(targetUrl);
-                        const response = await fetch(proxyUrl);
-                        const html = await response.text();
-                        const images = parseImages(html);
-                        
-                        images.forEach(img => {
-                            const key = img.full;
-                            if (!usedImages.has(key)) {
-                                imagePool.push(img);
+                    
+                    const data = await response.json();
+                    
+                    if (data.data && data.data.length > 0) {
+                        data.data.forEach(img => {
+                            if (!usedImages.has(img.path)) {
+                                imagePool.push({
+                                    // 注意：图片地址不需要走代理，因为 Wallhaven 图片服务器允许跨域
+                                    // 但如果图片也加载不出来，可以将 img.path 替换为 WORKER_PROXY_URL + img.path
+                                    full: img.path, 
+                                    thumb: img.thumbs ? img.thumbs.large : img.path 
+                                });
                             }
                         });
-                    } catch (error) {
-                        console.error(`Fetch failed for page ${page}:`, error);
+                    } else {
+                        break; 
                     }
+                    
+                    updateCounterDisplay();
+                    
+                } catch (error) {
+                    console.error('加载过程出错:', error);
                 }
                 
-                // 更新显示
-                updateCounterDisplay();
+                await new Promise(r => setTimeout(r, 200));
             }
             
-            status.textContent = `图库加载完成，共 ${imagePool.length} 张图片`;
+            updateProgress(CONFIG.pagesToLoad, CONFIG.pagesToLoad);
+            status.textContent = `图库更新完成，当前 ${imagePool.length} 张`;
         }
 
-        // 解析HTML提取图片
-        function parseImages(html) {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-            
-            const imgElements = doc.querySelectorAll('.thumb-listing-page li img');
-            const images = [];
-            
-            imgElements.forEach(img => {
-                const dataSrc = img.getAttribute('data-src');
-                if (dataSrc) {
-                    const fullUrl = dataSrc.replace('th.wallhaven.cc/small', 'w.wallhaven.cc/full');
-                    images.push({
-                        full: fullUrl,
-                        thumb: dataSrc
-                    });
-                }
-            });
-
-            return images;
-        }
-
-        // 随机显示一张图片
         async function showRandomImage() {
             if (isLoading) return;
             
             const container = document.getElementById('imageContainer');
             const status = document.getElementById('status');
-            const refreshBtn = document.getElementById('refreshBtn');
+            const btn = document.getElementById('refreshBtn');
 
-            // 如果图库为空，先加载图片
-            if (imagePool.length === 0) {
+            if (imagePool.length < CONFIG.refillThreshold) {
                 isLoading = true;
-                refreshBtn.disabled = true;
-                container.innerHTML = '<p class="loading">首次加载中...</p>';
+                btn.disabled = true;
+                container.innerHTML = '<p class="loading">正在补充图库...</p>';
                 
                 await loadImagesToPool();
                 
                 if (imagePool.length === 0) {
-                    container.innerHTML = '<p class="error">加载图片失败<br><small>请尝试切换代理或检查网络连接</small></p>';
-                    status.textContent = '加载失败，请重试';
+                    container.innerHTML = `<p class="error">图库加载失败。<br>请检查代码中的代理地址是否配置正确。<br>或稍后重试。</p>`;
+                    status.textContent = '加载失败';
                     isLoading = false;
-                    refreshBtn.disabled = false;
+                    btn.disabled = false;
                     return;
                 }
                 
                 isLoading = false;
-                refreshBtn.disabled = false;
+                btn.disabled = false;
             }
 
-            // 随机选择一张图片
             const randomIndex = Math.floor(Math.random() * imagePool.length);
             const imageData = imagePool[randomIndex];
 
-            // 从池中移除已显示的图片
             imagePool.splice(randomIndex, 1);
             usedImages.add(imageData.full);
 
-            const img = document.createElement('img');
+            const img = new Image();
             img.src = imageData.full;
-            img.alt = 'Wallhaven图片';
+            img.alt = 'Wallhaven';
             
-            img.onerror = function() {
-                if (this.src === imageData.full) {
-                    this.src = imageData.thumb;
-                    console.log('加载缩略图:', imageData.thumb);
-                } else {
-                    status.textContent = '图片加载失败，换一张...';
-                    setTimeout(() => showRandomImage(), 500);
-                }
-            };
-
+            container.innerHTML = '<p class="loading">图片加载中...</p>';
+            
             img.onload = function() {
+                container.innerHTML = '';
+                container.appendChild(img);
+                
                 imageCount++;
                 totalImageCount++;
                 saveCounter();
                 updateCounterDisplay();
-                status.textContent = `显示成功！`;
+                
+                status.textContent = `加载成功！剩余图库: ${imagePool.length} 张`;
             };
-
-            container.innerHTML = '';
-            container.appendChild(img);
-
-            // 当图库少于10张时，自动补充
-            if (imagePool.length < 10) {
-                status.textContent += ' | 正在补充图库...';
-                loadImagesToPool();
-            }
+            
+            img.onerror = function() {
+                // 如果图片也被墙，尝试走代理加载图片（作为备用方案）
+                if (!imageData.full.includes('workers.dev')) {
+                    img.src = WORKER_PROXY_URL + encodeURIComponent(imageData.full);
+                } else {
+                    status.textContent = '图片加载失败，自动跳过...';
+                    setTimeout(showRandomImage, 300);
+                }
+            };
         }
 
-        // 监听键盘事件
-        document.addEventListener('keydown', function (event) {
-            if (event.code === 'Space') {
-                event.preventDefault();
+        document.addEventListener('keydown', e => {
+            if (e.code === 'Space') {
+                e.preventDefault();
                 showRandomImage();
             }
         });
 
-        // 页面加载时初始化
-        window.onload = function () {
+        window.onload = () => {
             loadCounter();
             showRandomImage();
         };
